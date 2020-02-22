@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class CashMachineApp extends Application {
 
-    private TextField field = new TextField();
+
     private CashMachine cashMachine = new CashMachine(new Bank());
     private Map<MenuType, MenuItem> menus = new HashMap<>();
 
@@ -33,6 +33,8 @@ public class CashMachineApp extends Application {
 
     private Parent createMainWindow() {
         //********************************************************
+        TextField field = new TextField();
+
         MenuBar menuBar = new MenuBar();
         VBox vbox = new VBox(menuBar);
         Menu accounts = new Menu("Accounts");
@@ -105,15 +107,6 @@ public class CashMachineApp extends Application {
 
         //*****************************
 
-
-
-
-
-        //******************
-
-
-
-
         FlowPane flowpane = new FlowPane();
 
         flowpane.getChildren().add(btnSubmit);
@@ -170,9 +163,25 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
+
+        //**********************
+        TextField field = new TextField();
+        TextArea areaInfo = new TextArea();
+
+        Button btnDeposit = new Button("Deposit");
+        btnDeposit.setOnAction(e -> {
+            try {
+                Float amount = Float.parseFloat(field.getText());
+                cashMachine.deposit(amount);
+                areaInfo.setText(cashMachine.toString());
+            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
+        });
+        //*************************
+
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane);
+        flowpane.getChildren().add(btnDeposit);
+        vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
     }
 
