@@ -10,16 +10,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import rocks.zipcode.atm.bank.AccountData;
-import rocks.zipcode.atm.bank.Bank;
+import rocks.zipcode.atm.bank.*;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.FlowPane;
-import rocks.zipcode.atm.bank.BasicAccount;
-import rocks.zipcode.atm.bank.PremiumAccount;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,8 +95,13 @@ public class CashMachineApp extends Application {
 
         btn.setOnAction(e -> {
             String loginEmail = emailField.getText();
-            cashMachine.login(loginEmail);
-            areaInfo.setText(cashMachine.toString());
+            for (Map.Entry<Account, String> i  : this.cashMachine.getBank().getPassWordMap().entrySet()) {
+                if (i.getKey().getAccountData().getEmail().equals(loginEmail) && i.getValue().equals(pwBox.getText())) {
+                    cashMachine.login(loginEmail);
+                    areaInfo.setText(cashMachine.toString());
+                    updateLogin();
+                }
+            }
             primaryStage.setScene(oldScene);
         });
 
@@ -251,6 +253,15 @@ public class CashMachineApp extends Application {
         }
     }
 
+    private void updateLogin() {
+       MenuItem ref = menus.get(MenuType.LOGIN);
+       if (this.cashMachine.getAccountData() == null) {
+           ref.setText("Login");
+       } else {
+           ref.setText("Logout");
+       }
+    }
+
     //******************
 
     private Parent createInstruction(Stage primaryStage, Scene oldScene) {
@@ -298,8 +309,14 @@ public class CashMachineApp extends Application {
 
         login.setOnAction(e -> {
             // change to proper scene for login
-            Scene scene = new Scene(createLogin(stage, mainScene));
-            stage.setScene(scene);
+            if (this.cashMachine.getAccountData() == null) {
+                Scene scene = new Scene(createLogin(stage, mainScene));
+                stage.setScene(scene);
+            } else {
+                this.cashMachine.exit();
+                updateLogin();
+            }
+
         });
 
         register.setOnAction(e -> {
