@@ -19,9 +19,10 @@ import java.util.Map;
  */
 public class CashMachineApp extends Application {
 
-    private TextField field = new TextField();
     private CashMachine cashMachine = new CashMachine(new Bank());
     private Map<MenuType, MenuItem> menus = new HashMap<>();
+
+    private TextArea areaInfo = new TextArea();
 
     public enum MenuType {
         LOGIN,
@@ -32,6 +33,7 @@ public class CashMachineApp extends Application {
 
     private Parent createMainWindow() {
         //********************************************************
+        TextField field = new TextField();
         MenuBar menuBar = new MenuBar();
         VBox vbox = new VBox(menuBar);
         Menu accounts = new Menu("Accounts");
@@ -56,8 +58,6 @@ public class CashMachineApp extends Application {
 
         vbox.setPrefSize(600, 600);
 
-        TextArea areaInfo = new TextArea();
-
         Button btnSubmit = new Button("Set Account ID");
         btnSubmit.setOnAction(e -> {
             try {
@@ -68,33 +68,7 @@ public class CashMachineApp extends Application {
             } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
         });
 
-        Button btnDeposit = new Button("Deposit");
-        btnDeposit.setOnAction(e -> {
-            try {
-                Float amount = Float.parseFloat(field.getText());
-                cashMachine.deposit(amount);
-
-                areaInfo.setText(cashMachine.toString());
-            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
-        });
-
-        Button btnWithdraw = new Button("Withdraw");
-        btnWithdraw.setOnAction(e -> {
-            try {
-                Float amount = Float.parseFloat(field.getText());
-                if (cashMachine.getAccountData().getBalance() >= amount) {
-                    cashMachine.withdraw(amount);
-                    areaInfo.setText(cashMachine.toString());
-                } else if (cashMachine.getAccountData().getType().equals(AccountData.AccountType.PREMIUM) && cashMachine.getAccountData().getBalance() + PremiumAccount.getOverdraftLimit() >= amount){
-                    cashMachine.withdraw(amount);
-                    areaInfo.setText(cashMachine.toString());
-                } else {
-                    areaInfo.setText("Withdraw failed: " + amount + ". Account has: " + cashMachine.getAccountData().getBalance());
-                }
-            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
-        });
-
-        Button btnExit = new Button("Exit");
+        Button btnExit = new Button("Logout");
         btnExit.setOnAction(e -> {
             cashMachine.exit();
 
@@ -102,12 +76,9 @@ public class CashMachineApp extends Application {
         });
 
         FlowPane flowpane = new FlowPane();
-
         flowpane.getChildren().add(btnSubmit);
-        flowpane.getChildren().add(btnDeposit);
-        flowpane.getChildren().add(btnWithdraw);
         flowpane.getChildren().add(btnExit);
-        vbox.getChildren().addAll(field, flowpane, areaInfo);
+        vbox.getChildren().addAll(field, flowpane);
         return vbox;
     }
 
@@ -125,15 +96,33 @@ public class CashMachineApp extends Application {
     }
 
     private Parent createWithdraw(Stage primaryStage, Scene oldScene) {
+        TextField field = new TextField();
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
+        Button btnWithdraw = new Button("Withdraw");
+        btnWithdraw.setOnAction(e -> {
+            try {
+                Float amount = Float.parseFloat(field.getText());
+                if (cashMachine.getAccountData().getBalance() >= amount) {
+                    cashMachine.withdraw(amount);
+                    areaInfo.setText(cashMachine.toString());
+                } else if (cashMachine.getAccountData().getType().equals(AccountData.AccountType.PREMIUM) && cashMachine.getAccountData().getBalance() + PremiumAccount.getOverdraftLimit() >= amount){
+                    cashMachine.withdraw(amount);
+                    areaInfo.setText(cashMachine.toString());
+                } else {
+                    areaInfo.setText("Withdraw failed: " + amount + ". Account has: " + cashMachine.getAccountData().getBalance());
+                }
+            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
+        });
+
         Button returnBtn = new Button("Return to Main Menu");
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
         FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(btnWithdraw);
         flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane);
+        vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
     }
 
@@ -151,16 +140,33 @@ public class CashMachineApp extends Application {
     }
 
     private Parent createDeposit(Stage primaryStage, Scene oldScene) {
+        TextField field = new TextField();
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
+        Button btnDeposit = new Button("Deposit");
+        btnDeposit.setOnAction(e -> {
+            try {
+                Float amount = Float.parseFloat(field.getText());
+                cashMachine.deposit(amount);
+
+                areaInfo.setText(cashMachine.toString());
+            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
+        });
+
+
         Button returnBtn = new Button("Return to Main Menu");
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
         FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(btnDeposit);
         flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane);
+        vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
+    }
+
+    private Scene getMainScene() {
+        return new Scene(createMainWindow());
     }
 
     @Override
