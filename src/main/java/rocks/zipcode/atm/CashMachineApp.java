@@ -96,6 +96,17 @@ public class CashMachineApp extends Application {
             areaInfo.setText(cashMachine.toString());
         });
 
+        //*****************************
+
+
+
+
+
+        //******************
+
+
+
+
         FlowPane flowpane = new FlowPane();
 
         flowpane.getChildren().add(btnSubmit);
