@@ -11,15 +11,10 @@ import java.util.Map;
 public class Bank {
 
     private Map<String, Account> accounts = new HashMap<>();
+    private Map<Account, String> passWordMap = new HashMap<>();
 
     public Bank() {
-        accounts.put("example1@gmail.com", new BasicAccount(new AccountData(
-                1000, "Example 1", "example1@gmail.com", 500, "password"
-        )));
 
-        accounts.put("example2@gmail.com", new PremiumAccount(new AccountData(
-                2000, "Example 2", "example2@gmail.com", 200, AccountData.AccountType.PREMIUM, "password"
-        )));
     }
 
 
@@ -34,14 +29,14 @@ public class Bank {
     }
 
     public ActionResult<AccountData> deposit(AccountData accountData, float amount) {
-        Account account = accounts.get(accountData.getId());
+        Account account = accounts.get(accountData.getEmail());
         account.deposit(amount);
 
         return ActionResult.success(account.getAccountData());
     }
 
     public ActionResult<AccountData> withdraw(AccountData accountData, float amount) {
-        Account account = accounts.get(accountData.getId());
+        Account account = accounts.get(accountData.getEmail());
         boolean ok = account.withdraw(amount);
 
         if (ok) {
@@ -55,7 +50,12 @@ public class Bank {
         return accounts;
     }
 
+    public Map<Account, String> getPassWordMap() {
+        return passWordMap;
+    }
+
     public void addAccountToBank(Account account) {
         accounts.put(account.getAccountData().getEmail(), account);
+        passWordMap.put(account, account.getAccountData().getPassword());
     }
 }

@@ -10,13 +10,16 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import rocks.zipcode.atm.bank.*;
+import rocks.zipcode.atm.bank.AccountData;
+import rocks.zipcode.atm.bank.Bank;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.FlowPane;
+import rocks.zipcode.atm.bank.BasicAccount;
+import rocks.zipcode.atm.bank.PremiumAccount;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +33,14 @@ public class CashMachineApp extends Application {
     private Map<MenuType, MenuItem> menus = new HashMap<>();
     private static String splashImgURL;
     private TextArea areaInfo = new TextArea();
-
     public enum MenuType {
         LOGIN,
         REGISTER,
         WITHDRAW,
-        DEPOSIT
+        DEPOSIT,
+        INSTRUCTION
     }
+
 
     private Parent createMainWindow() {
         //********************************************************
@@ -60,9 +64,14 @@ public class CashMachineApp extends Application {
         menus.put(MenuType.REGISTER, premium);
         menus.put(MenuType.DEPOSIT, deposits);
         menus.put(MenuType.WITHDRAW, withdraw);
+
         Menu help = new Menu("Help");
+        MenuItem instruction = new MenuItem("Instruction");
+        help.getItems().add(instruction);
         menuBar.getMenus().add(help);
+        menus.put(MenuType.INSTRUCTION, instruction);
         //********************************************************
+
 
         vbox.setPrefSize(600, 600);
         FlowPane flowpane = new FlowPane();
@@ -202,12 +211,12 @@ public class CashMachineApp extends Application {
         TextField field = new TextField();
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
+
         Button btnDeposit = new Button("Deposit");
         btnDeposit.setOnAction(e -> {
             try {
                 Float amount = Float.parseFloat(field.getText());
                 cashMachine.deposit(amount);
-
                 areaInfo.setText(cashMachine.toString());
             } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
         });
@@ -218,25 +227,56 @@ public class CashMachineApp extends Application {
             primaryStage.setScene(oldScene);
         });
 
+
         if (this.cashMachine.getAccountData() == null) {
             btnDeposit.setDisable(true);
             areaInfo.setText("You must be logged in!");
         }
 
+
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(btnDeposit);
         flowpane.getChildren().add(returnBtn);
+
+
         vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
     }
 
     private void HandleNewUser(String name, String email, String pass, Integer startingBal, AccountData.AccountType type) {
         if (type.equals(AccountData.AccountType.PREMIUM)) {
-            this.cashMachine.getBank().addAccountToBank(new PremiumAccount(new AccountData(1000, name, email, startingBal, type, pass)));
+            this.cashMachine.getBank().addAccountToBank(new PremiumAccount(new AccountData(name, email, startingBal, type, pass)));
         } else {
-            this.cashMachine.getBank().addAccountToBank(new BasicAccount(new AccountData(1000, name, email, startingBal, pass)));
+            this.cashMachine.getBank().addAccountToBank(new BasicAccount(new AccountData(name, email, startingBal, pass)));
         }
     }
+
+    //******************
+
+    private Parent createInstruction(Stage primaryStage, Scene oldScene) {
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
+
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+
+        TextArea areaInfo = new TextArea();
+        areaInfo.setText(" Instruction Follows:" + "\n"+
+                "1. Go to Log in and keep your username" + "\n" +
+                "2. To go back always click on return to Main Menu" + "\n" +
+                "3. To deposit click on deposit button and Withdraw for Withdraw");
+
+        areaInfo.setEditable(false);
+
+        FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(returnBtn);
+        vbox.getChildren().addAll(flowpane,areaInfo);
+        return vbox;
+    }
+
+    //******************
 
     private Scene getMainScene() {
         return new Scene(createMainWindow());
@@ -253,6 +293,8 @@ public class CashMachineApp extends Application {
         MenuItem register = menus.get(MenuType.REGISTER);
         MenuItem withdraw = menus.get(MenuType.WITHDRAW);
         MenuItem deposit = menus.get(MenuType.DEPOSIT);
+        MenuItem instruction = menus.get(MenuType.INSTRUCTION);
+
 
         login.setOnAction(e -> {
             // change to proper scene for login
@@ -277,6 +319,13 @@ public class CashMachineApp extends Application {
             Scene scene = new Scene(createDeposit(stage, mainScene));
             stage.setScene(scene);
         });
+
+        instruction.setOnAction(e -> {
+            // change to proper scene for deposit
+            Scene scene = new Scene(createInstruction(stage, mainScene));
+            stage.setScene(scene);
+        });
+
         stage.show();
     }
 
