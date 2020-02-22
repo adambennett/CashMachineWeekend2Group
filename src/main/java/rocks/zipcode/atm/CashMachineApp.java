@@ -22,7 +22,7 @@ public class CashMachineApp extends Application {
 
     private CashMachine cashMachine = new CashMachine(new Bank());
     private Map<MenuType, MenuItem> menus = new HashMap<>();
-
+    private TextArea areaInfo = new TextArea();
     public enum MenuType {
         LOGIN,
         REGISTER,
@@ -105,8 +105,6 @@ public class CashMachineApp extends Application {
             areaInfo.setText(cashMachine.toString());
         });
 
-        //*****************************
-
         FlowPane flowpane = new FlowPane();
 
         flowpane.getChildren().add(btnSubmit);
@@ -157,16 +155,11 @@ public class CashMachineApp extends Application {
     }
 
     private Parent createDeposit(Stage primaryStage, Scene oldScene) {
-        VBox vbox = new VBox(10);
-        vbox.setPrefSize(600, 600);
-        Button returnBtn = new Button("Return to Main Menu");
-        returnBtn.setOnAction(e -> {
-            primaryStage.setScene(oldScene);
-        });
-
-        //**********************
         TextField field = new TextField();
         TextArea areaInfo = new TextArea();
+
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
 
         Button btnDeposit = new Button("Deposit");
         btnDeposit.setOnAction(e -> {
@@ -176,7 +169,12 @@ public class CashMachineApp extends Application {
                 areaInfo.setText(cashMachine.toString());
             } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
         });
-        //*************************
+
+
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
 
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(returnBtn);
