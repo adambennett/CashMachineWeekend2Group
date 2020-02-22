@@ -97,9 +97,16 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
+        Text sceneTitle = new Text("Account Sign In");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        Label email = new Label("Email: ");
+        TextField emailField = new TextField();
+        Label pw = new Label("Password: ");
+        PasswordField pwBox = new PasswordField();
+        Button btn = new Button("Sign In");
         FlowPane flowpane = new FlowPane();
-        flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane);
+
+        vbox.getChildren().addAll(flowpane, sceneTitle, email, emailField, pw, pwBox, btn, returnBtn);
         return vbox;
     }
 
