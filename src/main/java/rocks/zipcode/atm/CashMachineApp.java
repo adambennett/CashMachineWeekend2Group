@@ -65,25 +65,6 @@ public class CashMachineApp extends Application {
         //********************************************************
 
         vbox.setPrefSize(600, 600);
-
-        Button btnSubmit = new Button("Set Account ID");
-
-
-        btnSubmit.setOnAction(e -> {
-            try {
-                int id = Integer.parseInt(field.getText());
-                cashMachine.login(id);
-
-                areaInfo.setText(cashMachine.toString());
-            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
-        });
-
-        Button btnExit = new Button("Logout");
-        btnExit.setOnAction(e -> {
-            cashMachine.exit();
-            areaInfo.setText(cashMachine.toString());
-        });
-
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(image);
         vbox.getChildren().addAll(flowpane);
@@ -105,6 +86,13 @@ public class CashMachineApp extends Application {
         PasswordField pwBox = new PasswordField();
         Button btn = new Button("Sign In");
         FlowPane flowpane = new FlowPane();
+
+        btn.setOnAction(e -> {
+            String loginEmail = emailField.getText();
+            cashMachine.login(loginEmail);
+            areaInfo.setText(cashMachine.toString());
+            primaryStage.setScene(oldScene);
+        });
 
         vbox.getChildren().addAll(flowpane, sceneTitle, email, emailField, pw, pwBox, btn, returnBtn);
         return vbox;

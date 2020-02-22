@@ -10,25 +10,26 @@ import java.util.Map;
  */
 public class Bank {
 
-    private Map<Integer, Account> accounts = new HashMap<>();
+    private Map<String, Account> accounts = new HashMap<>();
 
     public Bank() {
-        accounts.put(1000, new BasicAccount(new AccountData(
+        accounts.put("example1@gmail.com", new BasicAccount(new AccountData(
                 1000, "Example 1", "example1@gmail.com", 500, "password"
         )));
 
-        accounts.put(2000, new PremiumAccount(new AccountData(
+        accounts.put("example2@gmail.com", new PremiumAccount(new AccountData(
                 2000, "Example 2", "example2@gmail.com", 200, AccountData.AccountType.PREMIUM, "password"
         )));
     }
 
-    public ActionResult<AccountData> getAccountById(int id) {
-        Account account = accounts.get(id);
+
+    public ActionResult<AccountData> getAccountByEmail(String email) {
+        Account account = accounts.get(email);
 
         if (account != null) {
             return ActionResult.success(account.getAccountData());
         } else {
-            return ActionResult.fail("No account with id: " + id + "\nTry account 1000 or 2000");
+            return ActionResult.fail("No account with email: " + email + "\nTry account 1000 or 2000");
         }
     }
 
@@ -50,11 +51,11 @@ public class Bank {
         }
     }
 
-    public Map<Integer, Account> getAccounts() {
+    public Map<String, Account> getAccounts() {
         return accounts;
     }
 
     public void addAccountToBank(Account account) {
-        accounts.put(account.getAccountData().getId(), account);
+        accounts.put(account.getAccountData().getEmail(), account);
     }
 }
