@@ -1,17 +1,17 @@
 package rocks.zipcode.atm;
 
+import javafx.scene.control.*;
 import rocks.zipcode.atm.bank.AccountData;
 import rocks.zipcode.atm.bank.Bank;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.FlowPane;
 import rocks.zipcode.atm.bank.PremiumAccount;
+
+import javax.swing.text.html.ImageView;
 
 /**
  * @author ZipCodeWilmington
@@ -22,7 +22,40 @@ public class CashMachineApp extends Application {
     private CashMachine cashMachine = new CashMachine(new Bank());
 
     private Parent createContent() {
-        VBox vbox = new VBox(10);
+
+
+        //VBox vbox = new VBox(10);
+
+       //****************************
+        MenuBar menuBar = new MenuBar();
+        VBox vbox = new VBox(menuBar);
+
+        Menu accounts = new Menu("Accounts");
+        MenuItem regular = new MenuItem("Regular");
+        MenuItem premium = new MenuItem("Premium");
+        accounts.getItems().add(regular);
+        accounts.getItems().add(premium);
+        menuBar.getMenus().add(accounts);
+
+        Menu transactions = new Menu("Transactions");
+        MenuItem deposits = new MenuItem("Deposits");
+        MenuItem withdraw = new MenuItem("Withdraw");
+        transactions.getItems().add(deposits);
+        transactions.getItems().add(withdraw);
+        menuBar.getMenus().add(transactions);
+
+        Menu help = new Menu("Help");
+
+
+        menuBar.getMenus().add(help);
+
+
+
+
+
+
+    //********************************
+
         vbox.setPrefSize(600, 600);
 
         TextArea areaInfo = new TextArea();
