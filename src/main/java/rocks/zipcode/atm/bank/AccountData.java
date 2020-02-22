@@ -5,27 +5,24 @@ package rocks.zipcode.atm.bank;
  */
 public final class AccountData {
 
-    private final int id;
     private final String name;
     private final String email;
     private AccountType type;
     private final Float balance;
+    private final String password;
 
-    AccountData(int id, String name, String email, float balance) {
-        this(id, name, email, balance, AccountType.BASIC);
+    public AccountData(String name, String email, float balance, String pass) {
+        this(name, email, balance, AccountType.BASIC, pass);
     }
 
-    AccountData(int id, String name, String email, float balance, AccountType type) {
-        this.id = id;
+    public AccountData(String name, String email, float balance, AccountType type, String pass) {
         this.name = name;
         this.email = email;
         this.balance = balance;
         this.type = type;
+        this.password = pass;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -43,10 +40,17 @@ public final class AccountData {
         return type;
     }
 
+    public void setType(AccountType type) {
+        this.type = type;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public String toString() {
-        return "Account id: " + id + '\n' +
-                "Name: " + name + '\n' +
+        return "Name: " + name + '\n' +
                 "Email: " + email + '\n' +
                 "Balance: " + balance;
     }

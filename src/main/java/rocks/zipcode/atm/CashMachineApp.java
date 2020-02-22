@@ -10,15 +10,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import rocks.zipcode.atm.bank.AccountData;
-import rocks.zipcode.atm.bank.Bank;
+import rocks.zipcode.atm.bank.*;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.FlowPane;
-import rocks.zipcode.atm.bank.PremiumAccount;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +28,7 @@ public class CashMachineApp extends Application {
 
     private CashMachine cashMachine = new CashMachine(new Bank());
     private Map<MenuType, MenuItem> menus = new HashMap<>();
+    private static String splashImgURL;
     private TextArea areaInfo = new TextArea();
     public enum MenuType {
         LOGIN,
@@ -72,25 +71,6 @@ public class CashMachineApp extends Application {
 
 
         vbox.setPrefSize(600, 600);
-
-        Button btnSubmit = new Button("Set Account ID");
-
-
-        btnSubmit.setOnAction(e -> {
-            try {
-                int id = Integer.parseInt(field.getText());
-                cashMachine.login(id);
-
-                areaInfo.setText(cashMachine.toString());
-            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
-        });
-
-        Button btnExit = new Button("Logout");
-        btnExit.setOnAction(e -> {
-            cashMachine.exit();
-            areaInfo.setText(cashMachine.toString());
-        });
-
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(image);
         vbox.getChildren().addAll(flowpane);
@@ -112,6 +92,18 @@ public class CashMachineApp extends Application {
         PasswordField pwBox = new PasswordField();
         Button btn = new Button("Sign In");
         FlowPane flowpane = new FlowPane();
+
+        btn.setOnAction(e -> {
+            String loginEmail = emailField.getText();
+            for (Map.Entry<Account, String> i  : this.cashMachine.getBank().getPassWordMap().entrySet()) {
+                if (i.getKey().getAccountData().getEmail().equals(loginEmail) && i.getValue().equals(pwBox.getText())) {
+                    cashMachine.login(loginEmail);
+                    areaInfo.setText(cashMachine.toString());
+                    updateLogin();
+                }
+            }
+            primaryStage.setScene(oldScene);
+        });
 
         vbox.getChildren().addAll(flowpane, sceneTitle, email, emailField, pw, pwBox, btn, returnBtn);
         return vbox;
@@ -158,42 +150,62 @@ public class CashMachineApp extends Application {
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
         Button returnBtn = new Button("Return to Main Menu");
-        returnBtn.setOnAction(e -> {
-            primaryStage.setScene(oldScene);
-        });
+        Button register = new Button("Register");
+
         Text sceneTitle = new Text("New Account Registration");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+
+        PasswordField pwBox = new PasswordField();
+        TextField userTextField = new TextField();
+        TextField emailField = new TextField();
+        TextField accountField = new TextField();
+        TextField balanceField = new TextField();
+
+        Label pw = new Label("Password:");
+        Label email = new Label("Email:");
+        Label accountType = new Label("Account Type:");
+        Label balance = new Label("Balance:");
+        Label userName = new Label("Name:");
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        Label userName = new Label("Name:");
         grid.add(userName, 0, 1);
-        TextField userTextField = new TextField();
         grid.add(userTextField, 1, 1);
-        Label pw = new Label("Password:");
         grid.add(pw, 0, 2);
-        PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
-        Label email = new Label("Email:");
         grid.add(email, 0, 3);
-        TextField emailField = new TextField();
         grid.add(emailField, 1, 3);
-        Label accountType = new Label("Account Type:");
         grid.add(accountType, 0, 4);
-        TextField accountField = new TextField();
         grid.add(accountField, 1, 4);
-        Label balance = new Label("Balance:");
         grid.add(balance, 0, 5);
-        TextField balanceField = new TextField();
         grid.add(balanceField, 1, 5);
-        Button btn = new Button("Register");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        FlowPane flowpane = new FlowPane();
-        flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane, sceneTitle, userName, userTextField, pw, pwBox, email, emailField, accountType, accountField, balance, balanceField,btn);
+
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+
+        register.setOnAction(e -> {
+            String newName = userTextField.getText();
+            String newEmail = emailField.getText();
+            String newAccount = accountField.getText();
+            String startBal = balanceField.getText();
+            String pass = pwBox.getText();
+            Integer newBal = 0;
+            try {
+                newBal = Integer.parseInt(startBal);
+            } catch (NumberFormatException ex) { }
+            AccountData.AccountType newType = AccountData.AccountType.BASIC;
+            if (newAccount.toLowerCase().equals("premium")) {
+                newType = AccountData.AccountType.PREMIUM;
+            }
+            HandleNewUser(newName, newEmail, pass, newBal, newType);
+            primaryStage.setScene(oldScene);
+        });
+
+        vbox.getChildren().addAll(sceneTitle, userName, userTextField, pw, pwBox, email, emailField, accountType, accountField, balance, balanceField,register, returnBtn);
         return vbox;
     }
 
@@ -231,6 +243,23 @@ public class CashMachineApp extends Application {
 
         vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
+    }
+
+    private void HandleNewUser(String name, String email, String pass, Integer startingBal, AccountData.AccountType type) {
+        if (type.equals(AccountData.AccountType.PREMIUM)) {
+            this.cashMachine.getBank().addAccountToBank(new PremiumAccount(new AccountData(name, email, startingBal, type, pass)));
+        } else {
+            this.cashMachine.getBank().addAccountToBank(new BasicAccount(new AccountData(name, email, startingBal, pass)));
+        }
+    }
+
+    private void updateLogin() {
+       MenuItem ref = menus.get(MenuType.LOGIN);
+       if (this.cashMachine.getAccountData() == null) {
+           ref.setText("Login");
+       } else {
+           ref.setText("Logout");
+       }
     }
 
     //******************
@@ -280,8 +309,14 @@ public class CashMachineApp extends Application {
 
         login.setOnAction(e -> {
             // change to proper scene for login
-            Scene scene = new Scene(createLogin(stage, mainScene));
-            stage.setScene(scene);
+            if (this.cashMachine.getAccountData() == null) {
+                Scene scene = new Scene(createLogin(stage, mainScene));
+                stage.setScene(scene);
+            } else {
+                this.cashMachine.exit();
+                updateLogin();
+            }
+
         });
 
         register.setOnAction(e -> {

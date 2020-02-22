@@ -10,37 +10,33 @@ import java.util.Map;
  */
 public class Bank {
 
-    private Map<Integer, Account> accounts = new HashMap<>();
+    private Map<String, Account> accounts = new HashMap<>();
+    private Map<Account, String> passWordMap = new HashMap<>();
 
     public Bank() {
-        accounts.put(1000, new BasicAccount(new AccountData(
-                1000, "Example 1", "example1@gmail.com", 500
-        )));
 
-        accounts.put(2000, new PremiumAccount(new AccountData(
-                2000, "Example 2", "example2@gmail.com", 200, AccountData.AccountType.PREMIUM
-        )));
     }
 
-    public ActionResult<AccountData> getAccountById(int id) {
-        Account account = accounts.get(id);
+
+    public ActionResult<AccountData> getAccountByEmail(String email) {
+        Account account = accounts.get(email);
 
         if (account != null) {
             return ActionResult.success(account.getAccountData());
         } else {
-            return ActionResult.fail("No account with id: " + id + "\nTry account 1000 or 2000");
+            return ActionResult.fail("No account with email: " + email + "\nTry account 1000 or 2000");
         }
     }
 
     public ActionResult<AccountData> deposit(AccountData accountData, float amount) {
-        Account account = accounts.get(accountData.getId());
+        Account account = accounts.get(accountData.getEmail());
         account.deposit(amount);
 
         return ActionResult.success(account.getAccountData());
     }
 
     public ActionResult<AccountData> withdraw(AccountData accountData, float amount) {
-        Account account = accounts.get(accountData.getId());
+        Account account = accounts.get(accountData.getEmail());
         boolean ok = account.withdraw(amount);
 
         if (ok) {
@@ -48,5 +44,18 @@ public class Bank {
         } else {
             return ActionResult.fail("Withdraw failed: " + amount + ". Account has: " + account.getBalance());
         }
+    }
+
+    public Map<String, Account> getAccounts() {
+        return accounts;
+    }
+
+    public Map<Account, String> getPassWordMap() {
+        return passWordMap;
+    }
+
+    public void addAccountToBank(Account account) {
+        accounts.put(account.getAccountData().getEmail(), account);
+        passWordMap.put(account, account.getAccountData().getPassword());
     }
 }

@@ -22,9 +22,9 @@ public class CashMachine {
         accountData = data;
     };
 
-    public void login(int id) {
+    public void login(String email) {
         tryCall(
-                () -> bank.getAccountById(id),
+                () -> bank.getAccountByEmail(email),
                 update
         );
     }
@@ -75,5 +75,9 @@ public class CashMachine {
 
     public AccountData getAccountData() {
         return accountData;
+    }
+
+    public Bank getBank() {
+        return bank;
     }
 }
