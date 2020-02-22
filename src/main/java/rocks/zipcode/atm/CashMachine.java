@@ -76,4 +76,8 @@ public class CashMachine {
     public AccountData getAccountData() {
         return accountData;
     }
+
+    public Bank getBank() {
+        return bank;
+    }
 }

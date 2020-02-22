@@ -3,15 +3,13 @@ package rocks.zipcode.atm;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import rocks.zipcode.atm.bank.AccountData;
-import rocks.zipcode.atm.bank.Bank;
+import rocks.zipcode.atm.bank.*;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.FlowPane;
-import rocks.zipcode.atm.bank.PremiumAccount;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -176,6 +174,14 @@ public class CashMachineApp extends Application {
         flowpane.getChildren().add(returnBtn);
         vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
+    }
+
+    private void HandleNewUser(String name, String email, Integer pin, Integer startingBal, AccountData.AccountType type) {
+        if (type.equals(AccountData.AccountType.PREMIUM)) {
+            this.cashMachine.getBank().addAccountToBank(new PremiumAccount(new AccountData(1000, name, email, startingBal, type, pin)));
+        } else {
+            this.cashMachine.getBank().addAccountToBank(new BasicAccount(new AccountData(1000, name, email, startingBal, pin)));
+        }
     }
 
     private Scene getMainScene() {

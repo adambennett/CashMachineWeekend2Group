@@ -14,11 +14,11 @@ public class Bank {
 
     public Bank() {
         accounts.put(1000, new BasicAccount(new AccountData(
-                1000, "Example 1", "example1@gmail.com", 500
+                1000, "Example 1", "example1@gmail.com", 500, 1000
         )));
 
         accounts.put(2000, new PremiumAccount(new AccountData(
-                2000, "Example 2", "example2@gmail.com", 200, AccountData.AccountType.PREMIUM
+                2000, "Example 2", "example2@gmail.com", 200, AccountData.AccountType.PREMIUM, 2000
         )));
     }
 
@@ -48,5 +48,13 @@ public class Bank {
         } else {
             return ActionResult.fail("Withdraw failed: " + amount + ". Account has: " + account.getBalance());
         }
+    }
+
+    public Map<Integer, Account> getAccounts() {
+        return accounts;
+    }
+
+    public void addAccountToBank(Account account) {
+        accounts.put(account.getAccountData().getId(), account);
     }
 }
