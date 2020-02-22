@@ -18,7 +18,7 @@ public class Bank {
         )));
 
         accounts.put(2000, new PremiumAccount(new AccountData(
-                2000, "Example 2", "example2@gmail.com", 200
+                2000, "Example 2", "example2@gmail.com", 200, AccountData.AccountType.PREMIUM
         )));
     }
 
