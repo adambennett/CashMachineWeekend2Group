@@ -27,26 +27,32 @@ public class CashMachineApp extends Application {
 
         Button btnSubmit = new Button("Set Account ID");
         btnSubmit.setOnAction(e -> {
-            int id = Integer.parseInt(field.getText());
-            cashMachine.login(id);
+            try {
+                int id = Integer.parseInt(field.getText());
+                cashMachine.login(id);
 
-            areaInfo.setText(cashMachine.toString());
+                areaInfo.setText(cashMachine.toString());
+            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
         });
 
         Button btnDeposit = new Button("Deposit");
         btnDeposit.setOnAction(e -> {
-            int amount = Integer.parseInt(field.getText());
-            cashMachine.deposit(amount);
+            try {
+                Float amount = Float.parseFloat(field.getText());
+                cashMachine.deposit(amount);
 
-            areaInfo.setText(cashMachine.toString());
+                areaInfo.setText(cashMachine.toString());
+            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
         });
 
         Button btnWithdraw = new Button("Withdraw");
         btnWithdraw.setOnAction(e -> {
-            int amount = Integer.parseInt(field.getText());
-            cashMachine.withdraw(amount);
+            try {
+                Float amount = Float.parseFloat(field.getText());
+                cashMachine.withdraw(amount);
 
-            areaInfo.setText(cashMachine.toString());
+                areaInfo.setText(cashMachine.toString());
+            } catch(NumberFormatException ex) { areaInfo.setText("Invalid input format!"); }
         });
 
         Button btnExit = new Button("Exit");
