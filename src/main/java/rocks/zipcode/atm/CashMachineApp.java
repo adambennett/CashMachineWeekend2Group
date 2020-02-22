@@ -1,6 +1,8 @@
 package rocks.zipcode.atm;
 
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import rocks.zipcode.atm.bank.AccountData;
 import rocks.zipcode.atm.bank.Bank;
 import javafx.application.Application;
@@ -21,7 +23,7 @@ public class CashMachineApp extends Application {
 
     private CashMachine cashMachine = new CashMachine(new Bank());
     private Map<MenuType, MenuItem> menus = new HashMap<>();
-
+    private static String splashImgURL;
     private TextArea areaInfo = new TextArea();
 
     public enum MenuType {
@@ -34,6 +36,7 @@ public class CashMachineApp extends Application {
     private Parent createMainWindow() {
         //********************************************************
         TextField field = new TextField();
+        ImageView image = new ImageView(new Image(splashImgURL));
         MenuBar menuBar = new MenuBar();
         VBox vbox = new VBox(menuBar);
         Menu accounts = new Menu("Accounts");
@@ -71,14 +74,12 @@ public class CashMachineApp extends Application {
         Button btnExit = new Button("Logout");
         btnExit.setOnAction(e -> {
             cashMachine.exit();
-
             areaInfo.setText(cashMachine.toString());
         });
 
         FlowPane flowpane = new FlowPane();
-        flowpane.getChildren().add(btnSubmit);
-        flowpane.getChildren().add(btnExit);
-        vbox.getChildren().addAll(field, flowpane);
+        flowpane.getChildren().add(image);
+        vbox.getChildren().addAll(flowpane);
         return vbox;
     }
 
@@ -119,6 +120,12 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
+
+        if (this.cashMachine.getAccountData() == null) {
+            btnWithdraw.setDisable(true);
+            areaInfo.setText("You must be logged in!");
+        }
+
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(btnWithdraw);
         flowpane.getChildren().add(returnBtn);
@@ -158,6 +165,12 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
+
+        if (this.cashMachine.getAccountData() == null) {
+            btnDeposit.setDisable(true);
+            areaInfo.setText("You must be logged in!");
+        }
+
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(btnDeposit);
         flowpane.getChildren().add(returnBtn);
@@ -171,6 +184,8 @@ public class CashMachineApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        areaInfo.setEditable(false);
+
         Scene mainScene = new Scene(createMainWindow());
         stage.setScene(mainScene);
 
@@ -207,5 +222,9 @@ public class CashMachineApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    static {
+        splashImgURL = "https://uploads-ssl.webflow.com/5de2db6d3719a1e2f3e4454c/5de99cfc58e6cb305d54eff0_best-banks-logos-explained.png";
     }
 }
