@@ -11,7 +11,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.FlowPane;
 import rocks.zipcode.atm.bank.PremiumAccount;
 
-import javax.swing.text.html.ImageView;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ZipCodeWilmington
@@ -20,41 +21,38 @@ public class CashMachineApp extends Application {
 
     private TextField field = new TextField();
     private CashMachine cashMachine = new CashMachine(new Bank());
+    private Map<MenuType, MenuItem> menus = new HashMap<>();
 
-    private Parent createContent() {
+    public enum MenuType {
+        LOGIN,
+        REGISTER,
+        WITHDRAW,
+        DEPOSIT
+    }
 
-
-        //VBox vbox = new VBox(10);
-
-       //****************************
+    private Parent createMainWindow() {
+        //********************************************************
         MenuBar menuBar = new MenuBar();
         VBox vbox = new VBox(menuBar);
-
         Menu accounts = new Menu("Accounts");
-        MenuItem regular = new MenuItem("Regular");
-        MenuItem premium = new MenuItem("Premium");
+        MenuItem regular = new MenuItem("Login");
+        MenuItem premium = new MenuItem("Register");
         accounts.getItems().add(regular);
         accounts.getItems().add(premium);
         menuBar.getMenus().add(accounts);
-
         Menu transactions = new Menu("Transactions");
         MenuItem deposits = new MenuItem("Deposits");
         MenuItem withdraw = new MenuItem("Withdraw");
         transactions.getItems().add(deposits);
         transactions.getItems().add(withdraw);
         menuBar.getMenus().add(transactions);
-
+        menus.put(MenuType.LOGIN, regular);
+        menus.put(MenuType.REGISTER, premium);
+        menus.put(MenuType.DEPOSIT, deposits);
+        menus.put(MenuType.WITHDRAW, withdraw);
         Menu help = new Menu("Help");
-
-
         menuBar.getMenus().add(help);
-
-
-
-
-
-
-    //********************************
+        //********************************************************
 
         vbox.setPrefSize(600, 600);
 
@@ -113,9 +111,91 @@ public class CashMachineApp extends Application {
         return vbox;
     }
 
+    private Parent createLogin(Stage primaryStage, Scene oldScene) {
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+        FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(returnBtn);
+        vbox.getChildren().addAll(flowpane);
+        return vbox;
+    }
+
+    private Parent createWithdraw(Stage primaryStage, Scene oldScene) {
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+        FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(returnBtn);
+        vbox.getChildren().addAll(flowpane);
+        return vbox;
+    }
+
+    private Parent createRegister(Stage primaryStage, Scene oldScene) {
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+        FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(returnBtn);
+        vbox.getChildren().addAll(flowpane);
+        return vbox;
+    }
+
+    private Parent createDeposit(Stage primaryStage, Scene oldScene) {
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+        FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(returnBtn);
+        vbox.getChildren().addAll(flowpane);
+        return vbox;
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
-        stage.setScene(new Scene(createContent()));
+        Scene mainScene = new Scene(createMainWindow());
+        stage.setScene(mainScene);
+
+        MenuItem login = menus.get(MenuType.LOGIN);
+        MenuItem register = menus.get(MenuType.REGISTER);
+        MenuItem withdraw = menus.get(MenuType.WITHDRAW);
+        MenuItem deposit = menus.get(MenuType.DEPOSIT);
+
+        login.setOnAction(e -> {
+            // change to proper scene for login
+            Scene scene = new Scene(createLogin(stage, mainScene));
+            stage.setScene(scene);
+        });
+
+        register.setOnAction(e -> {
+            // change to proper scene for register
+            Scene scene = new Scene(createRegister(stage, mainScene));
+            stage.setScene(scene);
+        });
+
+        withdraw.setOnAction(e -> {
+            // change to proper scene for withdraw
+            Scene scene = new Scene(createWithdraw(stage, mainScene));
+            stage.setScene(scene);
+        });
+
+        deposit.setOnAction(e -> {
+            // change to proper scene for deposit
+            Scene scene = new Scene(createDeposit(stage, mainScene));
+            stage.setScene(scene);
+        });
         stage.show();
     }
 
