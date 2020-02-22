@@ -32,7 +32,7 @@ public class Bank {
         }
     }
 
-    public ActionResult<AccountData> deposit(AccountData accountData, int amount) {
+    public ActionResult<AccountData> deposit(AccountData accountData, float amount) {
         Account account = accounts.get(accountData.getId());
         account.deposit(amount);
 
