@@ -45,6 +45,14 @@ public final class AccountData {
         return type;
     }
 
+    public void setType(AccountType type) {
+        this.type = type;
+    }
+
+    public Integer getPin() {
+        return pin;
+    }
+
     @Override
     public String toString() {
         return "Account id: " + id + '\n' +
