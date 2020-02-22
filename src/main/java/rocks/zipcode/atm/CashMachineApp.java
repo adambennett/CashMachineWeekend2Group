@@ -48,7 +48,7 @@ public class CashMachineApp extends Application {
         Button btnWithdraw = new Button("Withdraw");
         btnWithdraw.setOnAction(e -> {
             try {
-                int amount = Integer.parseInt(field.getText());
+                Float amount = Float.parseFloat(field.getText());
                 cashMachine.withdraw(amount);
 
                 areaInfo.setText(cashMachine.toString());
