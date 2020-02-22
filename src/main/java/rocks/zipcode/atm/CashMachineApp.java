@@ -26,14 +26,14 @@ public class CashMachineApp extends Application {
 
         //VBox vbox = new VBox(10);
 
-       //****************************
+       //*****************************
         MenuBar menuBar = new MenuBar();
         VBox vbox = new VBox(menuBar);
 
         Menu accounts = new Menu("Accounts");
-        MenuItem regular = new MenuItem("Regular");
+        MenuItem basic = new MenuItem("Basic");
         MenuItem premium = new MenuItem("Premium");
-        accounts.getItems().add(regular);
+        accounts.getItems().add(basic);
         accounts.getItems().add(premium);
         menuBar.getMenus().add(accounts);
 
@@ -45,14 +45,7 @@ public class CashMachineApp extends Application {
         menuBar.getMenus().add(transactions);
 
         Menu help = new Menu("Help");
-
-
         menuBar.getMenus().add(help);
-
-
-
-
-
 
     //********************************
 
