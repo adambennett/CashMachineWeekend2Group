@@ -10,19 +10,19 @@ public final class AccountData {
     private final String email;
     private AccountType type;
     private final Float balance;
-    private final Integer pin;
+    private final String password;
 
-    public AccountData(int id, String name, String email, float balance, int pin) {
-        this(id, name, email, balance, AccountType.BASIC, pin);
+    public AccountData(int id, String name, String email, float balance, String pass) {
+        this(id, name, email, balance, AccountType.BASIC, pass);
     }
 
-    public AccountData(int id, String name, String email, float balance, AccountType type, int pin) {
+    public AccountData(int id, String name, String email, float balance, AccountType type, String pass) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.balance = balance;
         this.type = type;
-        this.pin = pin;
+        this.password = pass;
     }
 
     public int getId() {
@@ -49,8 +49,8 @@ public final class AccountData {
         this.type = type;
     }
 
-    public Integer getPin() {
-        return pin;
+    public String getPassword() {
+        return password;
     }
 
     @Override

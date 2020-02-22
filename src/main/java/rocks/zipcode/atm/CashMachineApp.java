@@ -1,6 +1,13 @@
 package rocks.zipcode.atm;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import rocks.zipcode.atm.bank.*;
@@ -60,6 +67,8 @@ public class CashMachineApp extends Application {
         vbox.setPrefSize(600, 600);
 
         Button btnSubmit = new Button("Set Account ID");
+
+
         btnSubmit.setOnAction(e -> {
             try {
                 int id = Integer.parseInt(field.getText());
@@ -135,12 +144,62 @@ public class CashMachineApp extends Application {
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
         Button returnBtn = new Button("Return to Main Menu");
+        Button register = new Button("Register");
+
+        Text sceneTitle = new Text("New Account Registration");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+
+        PasswordField pwBox = new PasswordField();
+        TextField userTextField = new TextField();
+        TextField emailField = new TextField();
+        TextField accountField = new TextField();
+        TextField balanceField = new TextField();
+
+        Label pw = new Label("Password:");
+        Label email = new Label("Email:");
+        Label accountType = new Label("Account Type:");
+        Label balance = new Label("Balance:");
+        Label userName = new Label("Name:");
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.add(userName, 0, 1);
+        grid.add(userTextField, 1, 1);
+        grid.add(pw, 0, 2);
+        grid.add(pwBox, 1, 2);
+        grid.add(email, 0, 3);
+        grid.add(emailField, 1, 3);
+        grid.add(accountType, 0, 4);
+        grid.add(accountField, 1, 4);
+        grid.add(balance, 0, 5);
+        grid.add(balanceField, 1, 5);
+
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
-        FlowPane flowpane = new FlowPane();
-        flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane);
+
+        register.setOnAction(e -> {
+            String newName = userTextField.getText();
+            String newEmail = emailField.getText();
+            String newAccount = accountField.getText();
+            String startBal = balanceField.getText();
+            String pass = pwBox.getText();
+            Integer newBal = 0;
+            try {
+                newBal = Integer.parseInt(startBal);
+            } catch (NumberFormatException ex) { }
+            AccountData.AccountType newType = AccountData.AccountType.BASIC;
+            if (newAccount.toLowerCase().equals("premium")) {
+                newType = AccountData.AccountType.PREMIUM;
+            }
+            HandleNewUser(newName, newEmail, pass, newBal, newType);
+            primaryStage.setScene(oldScene);
+        });
+
+        vbox.getChildren().addAll(sceneTitle, userName, userTextField, pw, pwBox, email, emailField, accountType, accountField, balance, balanceField,register, returnBtn);
         return vbox;
     }
 
@@ -176,11 +235,11 @@ public class CashMachineApp extends Application {
         return vbox;
     }
 
-    private void HandleNewUser(String name, String email, Integer pin, Integer startingBal, AccountData.AccountType type) {
+    private void HandleNewUser(String name, String email, String pass, Integer startingBal, AccountData.AccountType type) {
         if (type.equals(AccountData.AccountType.PREMIUM)) {
-            this.cashMachine.getBank().addAccountToBank(new PremiumAccount(new AccountData(1000, name, email, startingBal, type, pin)));
+            this.cashMachine.getBank().addAccountToBank(new PremiumAccount(new AccountData(1000, name, email, startingBal, type, pass)));
         } else {
-            this.cashMachine.getBank().addAccountToBank(new BasicAccount(new AccountData(1000, name, email, startingBal, pin)));
+            this.cashMachine.getBank().addAccountToBank(new BasicAccount(new AccountData(1000, name, email, startingBal, pass)));
         }
     }
 

@@ -38,6 +38,6 @@ public abstract class Account {
 
     private void updateBalance(float newBalance) {
         accountData = new AccountData(accountData.getId(), accountData.getName(), accountData.getEmail(),
-                newBalance, accountData.getType(), accountData.getPin());
+                newBalance, accountData.getType(), accountData.getPassword());
     }
 }
