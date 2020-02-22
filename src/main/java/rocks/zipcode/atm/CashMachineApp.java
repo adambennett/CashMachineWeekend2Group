@@ -1,6 +1,13 @@
 package rocks.zipcode.atm;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import rocks.zipcode.atm.bank.AccountData;
@@ -62,6 +69,8 @@ public class CashMachineApp extends Application {
         vbox.setPrefSize(600, 600);
 
         Button btnSubmit = new Button("Set Account ID");
+
+
         btnSubmit.setOnAction(e -> {
             try {
                 int id = Integer.parseInt(field.getText());
@@ -140,9 +149,39 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
+        Text sceneTitle = new Text("New Account Registration");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        Label userName = new Label("Name:");
+        grid.add(userName, 0, 1);
+        TextField userTextField = new TextField();
+        grid.add(userTextField, 1, 1);
+        Label pw = new Label("Password:");
+        grid.add(pw, 0, 2);
+        PasswordField pwBox = new PasswordField();
+        grid.add(pwBox, 1, 2);
+        Label email = new Label("Email:");
+        grid.add(email, 0, 3);
+        TextField emailField = new TextField();
+        grid.add(emailField, 1, 3);
+        Label accountType = new Label("Account Type:");
+        grid.add(accountType, 0, 4);
+        TextField accountField = new TextField();
+        grid.add(accountField, 1, 4);
+        Label balance = new Label("Balance:");
+        grid.add(balance, 0, 5);
+        TextField balanceField = new TextField();
+        grid.add(balanceField, 1, 5);
+        Button btn = new Button("Register");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         FlowPane flowpane = new FlowPane();
         flowpane.getChildren().add(returnBtn);
-        vbox.getChildren().addAll(flowpane);
+        vbox.getChildren().addAll(flowpane, sceneTitle, userName, userTextField, pw, pwBox, email, emailField, accountType, accountField, balance, balanceField,btn);
         return vbox;
     }
 
