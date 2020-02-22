@@ -27,7 +27,8 @@ public class CashMachineApp extends Application {
         LOGIN,
         REGISTER,
         WITHDRAW,
-        DEPOSIT
+        DEPOSIT,
+        INSTRUCTION
     }
 
 
@@ -53,8 +54,12 @@ public class CashMachineApp extends Application {
         menus.put(MenuType.REGISTER, premium);
         menus.put(MenuType.DEPOSIT, deposits);
         menus.put(MenuType.WITHDRAW, withdraw);
+
         Menu help = new Menu("Help");
+        MenuItem instruction = new MenuItem("Instruction");
+        help.getItems().add(instruction);
         menuBar.getMenus().add(help);
+        menus.put(MenuType.INSTRUCTION, instruction);
         //********************************************************
 
 
@@ -183,6 +188,33 @@ public class CashMachineApp extends Application {
         return vbox;
     }
 
+    //******************
+
+    private Parent createInstruction(Stage primaryStage, Scene oldScene) {
+        VBox vbox = new VBox(10);
+        vbox.setPrefSize(600, 600);
+
+        Button returnBtn = new Button("Return to Main Menu");
+        returnBtn.setOnAction(e -> {
+            primaryStage.setScene(oldScene);
+        });
+
+        TextArea areaInfo = new TextArea();
+        areaInfo.setText(" Instruction Follows:" + "\n"+
+                "1. Go to Log in and keep your username" + "\n" +
+                "2. To go back always click on return to Main Menu" + "\n" +
+                "3. To deposit click on deposit button and Withdraw for Withdraw");
+
+        areaInfo.setEditable(false);
+
+        FlowPane flowpane = new FlowPane();
+        flowpane.getChildren().add(returnBtn);
+        vbox.getChildren().addAll(flowpane,areaInfo);
+        return vbox;
+    }
+
+    //******************
+
     @Override
     public void start(Stage stage) throws Exception {
         Scene mainScene = new Scene(createMainWindow());
@@ -192,6 +224,8 @@ public class CashMachineApp extends Application {
         MenuItem register = menus.get(MenuType.REGISTER);
         MenuItem withdraw = menus.get(MenuType.WITHDRAW);
         MenuItem deposit = menus.get(MenuType.DEPOSIT);
+        MenuItem instruction = menus.get(MenuType.INSTRUCTION);
+
 
         login.setOnAction(e -> {
             // change to proper scene for login
@@ -216,6 +250,13 @@ public class CashMachineApp extends Application {
             Scene scene = new Scene(createDeposit(stage, mainScene));
             stage.setScene(scene);
         });
+
+        instruction.setOnAction(e -> {
+            // change to proper scene for deposit
+            Scene scene = new Scene(createInstruction(stage, mainScene));
+            stage.setScene(scene);
+        });
+
         stage.show();
     }
 
