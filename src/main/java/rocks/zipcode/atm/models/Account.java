@@ -2,6 +2,7 @@ package rocks.zipcode.atm.models;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
 
 import static jdk.nashorn.internal.objects.NativeMath.round;
 
@@ -14,7 +15,6 @@ public abstract class Account {
     private String email;
     private AccountType type;
     private Float balance;
-    private String password;
     private Boolean isAdmin;
 
     public enum AccountType {
@@ -22,21 +22,21 @@ public abstract class Account {
         PREMIUM
     }
 
-   public Account(String name, String email, float balance, String pass) {
-       this(name, email, balance, AccountType.BASIC, pass);
+   public Account(String name, String email, float balance, String pass, Bank bank) {
+       this(name, email, balance, AccountType.BASIC, pass, bank);
     }
 
-    public Account(String name, String email, float balance, AccountType type, String pass) {
-        this(name, email, balance, type, pass, false);
+    public Account(String name, String email, float balance, AccountType type, String pass, Bank bank) {
+        this(name, email, balance, type, pass, false, bank);
     }
 
-    public Account(String name, String email, float balance, AccountType type, String pass, boolean admin) {
+    public Account(String name, String email, float balance, AccountType type, String pass, boolean admin, Bank bank) {
         this.name = name;
         this.email = email;
         this.balance = balance;
         this.type = type;
-        this.password = pass;
         this.isAdmin = admin;
+        bank.addAccountToBank(this, pass);
     }
 
     public void deposit(float amount) {
@@ -52,10 +52,9 @@ public abstract class Account {
         }
     }
 
-    private static DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
-
     @Override
     public String toString() {
+        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
         df.setDecimalSeparatorAlwaysShown(true);
         df.setMinimumFractionDigits(2);
         BigDecimal bal = new BigDecimal(balance);
@@ -117,10 +116,6 @@ public abstract class Account {
 
     public AccountType getType() {
         return type;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public Boolean isAdmin() {

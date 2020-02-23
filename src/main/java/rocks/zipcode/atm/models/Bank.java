@@ -16,36 +16,17 @@ public class Bank {
         this.passWordMap = new HashMap<>();
     }
 
-    public Account getAccountByEmail(String email) {
-        return (accounts.containsKey(email)) ? accounts.get(email) : null;
-    }
-
-    public Boolean deposit(float amount, Account acc) {
-        if (accounts.containsKey(acc.getEmail())) {
-            accounts.get(acc.getEmail()).deposit(amount);
-            return true;
+    public Boolean validLogin(Account acc, String password) {
+        if (passWordMap.containsKey(acc)) {
+            if (passWordMap.get(acc).equals(password)) {
+                return true;
+            }
         }
         return false;
     }
 
-    public Boolean withdraw(float amount, Account acc) {
-        if (accounts.containsKey(acc.getEmail())) {
-            Account account = accounts.get(acc.getEmail());
-            return account.withdraw(amount);
-        }
-        return false;
-    }
-
-    public Map<String, Account> getAccounts() {
-        return accounts;
-    }
-
-    public Map<Account, String> getPassWordMap() {
-        return passWordMap;
-    }
-
-    public void addAccountToBank(Account account) {
+    public void addAccountToBank(Account account, String password) {
         accounts.put(account.getEmail(), account);
-        passWordMap.put(account, account.getPassword());
+        passWordMap.put(account, password);
     }
 }

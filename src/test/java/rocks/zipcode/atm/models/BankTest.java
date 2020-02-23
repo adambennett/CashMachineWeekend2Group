@@ -7,26 +7,14 @@ import static org.junit.Assert.*;
 public class BankTest {
 
     @Test
-    public void getAccountByEmail() {
+    public void TestBankInitialize() {
     }
 
     @Test
-    public void deposit() {
+    public void TestValidLogin() {
     }
 
     @Test
-    public void withdraw() {
-    }
-
-    @Test
-    public void getAccounts() {
-    }
-
-    @Test
-    public void getPassWordMap() {
-    }
-
-    @Test
-    public void addAccountToBank() {
+    public void TestAddAccountToBank() {
     }
 }
