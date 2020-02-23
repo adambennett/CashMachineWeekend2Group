@@ -95,7 +95,7 @@ public class CashMachineApp extends Application {
         updateMenus();
 
         flowpane.getChildren().add(image);
-        vbox.setPrefSize(600, 600);
+        vbox.setPrefSize(600, 450);
         vbox.getChildren().addAll(flowpane);
         return vbox;
     }
@@ -447,6 +447,6 @@ public class CashMachineApp extends Application {
         menus = new HashMap<>();
         areaInfo = new TextArea();
         areaInfo.setEditable(false);
-        splashImgURL = "https://uploads-ssl.webflow.com/5de2db6d3719a1e2f3e4454c/5de99cfc58e6cb305d54eff0_best-banks-logos-explained.png";
+        splashImgURL = "https://i.imgur.com/9th90Rd.jpg";
     }
 }
