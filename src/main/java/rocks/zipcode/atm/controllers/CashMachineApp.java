@@ -449,7 +449,7 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
-        Text sceneTitle = new Text("Administrator Menu - Viewing All Accounts");
+        Text sceneTitle = new Text("                 Administrator Menu - Viewing All Accounts");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 
         ObservableList<Account> data = FXCollections.observableArrayList(cashMachine.getAllAccounts());
