@@ -308,7 +308,7 @@ public class CashMachineApp extends Application {
         badPass.setVisible(false);
         badPass.setWrapText(true);
 
-        Tooltip tooltip = new Tooltip("Passwords must be at least 8 characters\nPasswords must contain uppercase and lowercase letters\nPasswords must contain at least one special character.");
+        Tooltip tooltip = new Tooltip("Passwords must be at least 8 characters.\nPasswords must contain uppercase and lowercase letters.\nPasswords must contain at least one special character.");
         pwBox.setTooltip(tooltip);
         tooltip.setWrapText(true);
 
