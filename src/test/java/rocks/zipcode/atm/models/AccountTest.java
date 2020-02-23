@@ -147,5 +147,19 @@ public class AccountTest {
 
     @Test
     public void isAdmin() {
+        //given
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", true);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", false);
+
+        //when
+        boolean expectedBasic = true;
+        boolean expectedPremium = false;
+        boolean actualBasic = newAccount.isAdmin();
+        boolean actualPremium = newAccount2.isAdmin();
+
+        //then
+        assertTrue(actualBasic);
+        assertFalse(actualPremium);
+
     }
 }
