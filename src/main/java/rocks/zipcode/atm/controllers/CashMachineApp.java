@@ -28,6 +28,7 @@ import rocks.zipcode.atm.services.MenuServices;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * @author ZipCodeWilmington
@@ -370,9 +371,9 @@ public class CashMachineApp extends Application {
             }
         } else {
             if (type.equals(Account.AccountType.PREMIUM)) {
-                cashMachine.addAccount(new PremiumAccount(name, email, startingBal, pass, true));
+                cashMachine.addAccount(new PremiumAccount(name, email, startingBal, pass, false));
             } else {
-                cashMachine.addAccount(new BasicAccount(name, email, startingBal, pass, true));
+                cashMachine.addAccount(new BasicAccount(name, email, startingBal, pass, false));
             }
         }
     }

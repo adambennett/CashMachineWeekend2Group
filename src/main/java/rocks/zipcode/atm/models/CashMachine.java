@@ -3,6 +3,7 @@ package rocks.zipcode.atm.models;
 import rocks.zipcode.atm.controllers.CashMachineApp;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * @author ZipCodeWilmington
