@@ -41,7 +41,10 @@ public class CashMachine {
 
     public Boolean withdraw(float amt, Account acc) {
         if (this.currentUser != null && loggedIn) {
-            this.currentUser.withdraw(amt);
+           if (this.currentUser.withdraw(amt)){
+               return true;
+           }
+           return false;
         }
         return false;
     }

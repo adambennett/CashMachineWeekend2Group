@@ -168,7 +168,7 @@ public class CashMachineApp extends Application {
     public static Parent createDeposit(Stage primaryStage, Scene oldScene) {
         areaInfo.setText(cashMachine.toString());
         TextField field = new TextField();
-        Label badInput = new Label("Bad input format!");
+        Label badInput = new Label("The value you entered is invalid. Please enter numbers.");
         Label spacer = new Label("-------");
         spacer.setVisible(false);
         badInput.setTextFill(Color.web("red"));
@@ -222,7 +222,7 @@ public class CashMachineApp extends Application {
     public static Parent createWithdraw(Stage primaryStage, Scene oldScene) {
         areaInfo.setText(cashMachine.toString());
         TextField field = new TextField();
-        Label badInput = new Label("Bad input format!");
+        Label badInput = new Label("The value you entered is invalid. Please enter numbers.");
         Label badWithdraw = new Label(getBadWithdrawText(0.0f));
         Label spacer = new Label("-------");
 

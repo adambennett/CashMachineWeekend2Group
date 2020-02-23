@@ -57,9 +57,6 @@ public abstract class Account {
     public String toString() {
         if (this.balance < 0) {
 
-//            return "Name: " + name + '\n' +
-//                    "Email: " + email + '\n' +
-//                    "Balance: -$" + -balance;
                 Float value = Float.valueOf(df.format(balance));
             return "Name: " + name + '\n' +
                     "Email: " + email + '\n' +
@@ -67,9 +64,7 @@ public abstract class Account {
 
 
         } else {
-//            return "Name: " + name + '\n' +
-//                    "Email: " + email + '\n' +
-//                    "Balance: $" + balance;
+
             Float value = Float.valueOf(df.format(balance));
             return "Name: " + name + '\n' +
                     "Email: " + email + '\n' +
@@ -92,6 +87,7 @@ public abstract class Account {
     }
 
     public Boolean canWithdraw(float amount) {
+       if (amount < 0.0f) { return false;}
         return getBalance() >= amount;
     }
 
