@@ -26,6 +26,8 @@ import rocks.zipcode.atm.models.BasicAccount;
 import rocks.zipcode.atm.models.PremiumAccount;
 import rocks.zipcode.atm.services.MenuServices;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -142,6 +144,7 @@ public class CashMachineApp extends Application {
         grid.add(emailField, 1, 1);
         grid.add(pw, 0, 2);
         grid.add(pwBox, 1, 2);
+        grid.add(notFoundUser, 0, 5);
         grid.add(btn, 0, 6);
         grid.add(returnBtn, 1, 6);
         btn.setOnAction(e -> {
@@ -174,22 +177,28 @@ public class CashMachineApp extends Application {
         spacer.setVisible(false);
         badInput.setTextFill(Color.web("red"));
         badInput.setVisible(false);
+        Label negInput = new Label("Cannot deposit a negative amount.");
+        negInput.setTextFill(Color.web("red"));
+        negInput.setVisible(false);
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
 
         Button btnDeposit = new Button("Deposit");
         btnDeposit.setOnAction(e -> {
             try {
-                if (cashMachine.isLoggedIn()) {
-                    Float amount = Float.parseFloat(field.getText());
+                Float amount = Float.parseFloat(field.getText());
+                if (amount > 0) {
                     cashMachine.deposit(amount, cashMachine.getCurrentUser());
                     areaInfo.setText(cashMachine.toString());
                     field.setText("");
                     badInput.setVisible(false);
+                    negInput.setVisible(false);
                 } else {
-                    areaInfo.setText("Not logged in!");
+                    field.setText("");
+                    negInput.setVisible(true);
+                    badInput.setVisible(false);
                 }
-            } catch(NumberFormatException ex) { if (!field.getText().equals("")) {  field.setText(""); badInput.setVisible(true); }}
+            } catch(NumberFormatException ex) { if (!field.getText().equals("")) {  field.setText(""); negInput.setVisible(false); badInput.setVisible(true); }}
         });
 
         Button returnBtn = new Button("Return to Main Menu");
@@ -207,15 +216,22 @@ public class CashMachineApp extends Application {
         flowpane.getChildren().add(returnBtn);
         flowpane.getChildren().add(spacer);
         flowpane.getChildren().add(badInput);
+        flowpane.getChildren().add(negInput);
         vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
     }
 
     private static String getBadWithdrawText(Float amt) {
+        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
+        df.setDecimalSeparatorAlwaysShown(true);
+        df.setMinimumFractionDigits(2);
+        BigDecimal bal = new BigDecimal(cashMachine.getBalance());
         if (cashMachine.getBalance() < 0) {
-            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has -$" + -cashMachine.getBalance();
+            String value = df.format(bal.multiply(BigDecimal.valueOf(-1.0)));
+            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has -$" + value;
         } else {
-            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has $" + cashMachine.getBalance();
+            String value = df.format(bal);
+            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has $" + value;
         }
 
     }
@@ -224,6 +240,7 @@ public class CashMachineApp extends Application {
         areaInfo.setText(cashMachine.toString());
         TextField field = new TextField();
         Label badInput = new Label("Bad input format!");
+        Label negInput = new Label("Cannot withdraw a negative amount.");
         Label badWithdraw = new Label(getBadWithdrawText(0.0f));
         Label spacer = new Label("-------");
 
@@ -232,6 +249,8 @@ public class CashMachineApp extends Application {
         badInput.setVisible(false);
         badWithdraw.setTextFill(Color.web("red"));
         badWithdraw.setVisible(false);
+        negInput.setTextFill(Color.web("red"));
+        negInput.setVisible(false);
 
         VBox vbox = new VBox(10);
         vbox.setPrefSize(600, 600);
@@ -239,19 +258,27 @@ public class CashMachineApp extends Application {
         btnWithdraw.setOnAction(e -> {
             try {
                 Float amount = Float.parseFloat(field.getText());
-                if (cashMachine.isLoggedIn() && cashMachine.getCurrentUser().canWithdraw(amount)) {
+                if (amount < 0) {
+                    negInput.setVisible(true);
+                    field.setText("");
+                    badInput.setVisible(false);
+                    badWithdraw.setVisible(false);
+                }
+                else if (cashMachine.isLoggedIn() && cashMachine.getCurrentUser().canWithdraw(amount)) {
                     cashMachine.withdraw(amount, cashMachine.getCurrentUser());
                     areaInfo.setText(cashMachine.toString());
                     field.setText("");
                     badInput.setVisible(false);
                     badWithdraw.setVisible(false);
+                    negInput.setVisible(false);
                 } else {
                     badWithdraw.setText(getBadWithdrawText(amount));
                     badInput.setVisible(false);
                     badWithdraw.setVisible(true);
+                    negInput.setVisible(false);
                     field.setText("");
                 }
-            } catch(NumberFormatException ex) { if (!field.getText().equals("")) {  field.setText(""); badWithdraw.setVisible(false); badInput.setVisible(true); }}
+            } catch(NumberFormatException ex) { if (!field.getText().equals("")) {  field.setText(""); badWithdraw.setVisible(false); negInput.setVisible(false); badInput.setVisible(true); }}
         });
 
         Button returnBtn = new Button("Return to Main Menu");
@@ -269,6 +296,7 @@ public class CashMachineApp extends Application {
         flowpane.getChildren().add(returnBtn);
         flowpane.getChildren().add(spacer);
         flowpane.getChildren().add(badInput);
+        flowpane.getChildren().add(negInput);
         flowpane.getChildren().add(badWithdraw);
         vbox.getChildren().addAll(field, flowpane, areaInfo);
         return vbox;
@@ -429,7 +457,7 @@ public class CashMachineApp extends Application {
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
-        Text sceneTitle = new Text("Administrator Menu - Viewing All Accounts");
+        Text sceneTitle = new Text("                 Administrator Menu - Viewing All Accounts");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 
         ObservableList<Account> data = FXCollections.observableArrayList(cashMachine.getAllAccounts());
