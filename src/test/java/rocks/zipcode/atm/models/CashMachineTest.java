@@ -1,5 +1,6 @@
 package rocks.zipcode.atm.models;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -8,7 +9,11 @@ public class CashMachineTest {
 
     @Test
     public void login() {
+        Bank bank = new Bank();
+        CashMachine cashMachine = new CashMachine(bank);
+        Assert.assertTrue(cashMachine.login("admin", "root"));
     }
+
 
     @Test
     public void deposit() {
@@ -43,14 +48,6 @@ public class CashMachineTest {
     }
 
     @Test
-    public void premiumAccount() {
-    }
-
-    @Test
-    public void canWithdraw() {
-    }
-
-    @Test
     public void getCurrentUser() {
     }
 
@@ -58,7 +55,4 @@ public class CashMachineTest {
     public void isLoggedIn() {
     }
 
-    @Test
-    public void isAdmin() {
-    }
 }

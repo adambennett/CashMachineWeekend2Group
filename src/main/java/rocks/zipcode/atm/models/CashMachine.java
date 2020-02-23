@@ -3,7 +3,6 @@ package rocks.zipcode.atm.models;
 import rocks.zipcode.atm.controllers.CashMachineApp;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * @author ZipCodeWilmington
@@ -15,36 +14,39 @@ public class CashMachine {
     private Account currentUser;
     private Boolean loggedIn = false;
     private Boolean isAdmin = false;
+    private String loginPass = "";
 
     public CashMachine(Bank bank) {
         this.allAccounts = new ArrayList<>();
         this.bank = bank;
         this.currentUser = null;
-        this.addAccount(new BasicAccount("Adam", "adam", 0, "adam", false));
-        this.addAccount(new BasicAccount("Admin", "admin", 1000000, "root", true));
+        this.addAccount(new BasicAccount("Adam", "adam", 0, "pass", false, bank), "pass");
+        this.addAccount(new BasicAccount("Zanetta", "zanetta", 0, "pass", false, bank), "pass");
+        this.addAccount(new BasicAccount("Khalil", "khalil", 0, "pass", false, bank), "pass");
+        this.addAccount(new BasicAccount("Ujjwal", "ujjwal", 0, "pass", false, bank), "pass");
+        this.addAccount(new BasicAccount("Admin", "admin", 1000000, "root", true, bank), "root");
     }
 
-    public Boolean login(String email) {
+    public Boolean login(String email, String password) {
         for (Account acc : this.allAccounts) {
-            if (acc.getEmail().equals(email)) {
+            if (acc.getEmail().equals(email) && this.bank.validLogin(acc, password)) {
                 this.currentUser = acc;
                 this.loggedIn = true;
+                this.loginPass = password;
                 CashMachineApp.updateMenus();
+                return true;
             }
         }
         return false;
     }
 
-    public Boolean deposit(float amt, Account acc) {
-        if (this.currentUser != null && loggedIn) {
-            this.currentUser.deposit(amt);
-        }
-        return false;
+    public void deposit(float amt, Account acc) {
+        acc.deposit(amt);
     }
 
     public Boolean withdraw(float amt, Account acc) {
-        if (this.currentUser != null && loggedIn) {
-            this.currentUser.withdraw(amt);
+        if (this.bank.validLogin(acc, loginPass)) {
+            return acc.withdraw(amt);
         }
         return false;
     }
@@ -52,6 +54,7 @@ public class CashMachine {
     public void logout() {
         this.currentUser = null;
         this.loggedIn = false;
+        this.loginPass = "";
         CashMachineApp.updateMenus();
     }
 
@@ -68,8 +71,8 @@ public class CashMachine {
         return bank;
     }
 
-    public void addAccount(Account acc) {
-        this.bank.addAccountToBank(acc);
+    public void addAccount(Account acc, String password) {
+        this.bank.addAccountToBank(acc, password);
         this.allAccounts.add(acc);
     }
 
@@ -84,29 +87,11 @@ public class CashMachine {
         return this.currentUser.getBalance();
     }
 
-    public Boolean premiumAccount() {
-        if (this.currentUser != null && this.loggedIn) {
-            return this.currentUser.getType().equals(Account.AccountType.PREMIUM);
-        }
-        return false;
-    }
-
-    public Boolean canWithdraw(float amt) {
-        if (this.currentUser != null && this.loggedIn) {
-            return this.currentUser.canWithdraw(amt);
-        }
-        return false;
-    }
-
     public Account getCurrentUser() {
         return currentUser;
     }
 
     public Boolean isLoggedIn() {
         return loggedIn;
-    }
-
-    public Boolean isAdmin() {
-        return isAdmin;
     }
 }

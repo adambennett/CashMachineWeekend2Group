@@ -3,17 +3,14 @@ package rocks.zipcode.atm.models;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static org.junit.Assert.*;
 
 public class AccountTest {
-    Logger logger = Logger.getLogger(AccountTest.class.getName());
     @Test
     public void deposit() {
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", bank);
         float depositAmount = 200;
         //when
         float expected = 1200;
@@ -30,8 +27,9 @@ public class AccountTest {
     @Test
     public void withdraw() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", bank);
         float withdrawAmount = 300;
         //when
         newAccount.withdraw(withdrawAmount);
@@ -50,9 +48,10 @@ public class AccountTest {
     @Test
     public void testEquals() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        BasicAccount newAccount2 = new BasicAccount("Khalil", "khalilcrumpler@hotmail.com", 1000, "abc123");
-        BasicAccount newAccount3 = new BasicAccount("John", "khalilcrumpler@gmail.com", 1000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        BasicAccount newAccount2 = new BasicAccount("Khalil", "khalilcrumpler@hotmail.com", 1000, "abc123", bank);
+        BasicAccount newAccount3 = new BasicAccount("John", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
         //when
         boolean actual = newAccount.equals(newAccount2);
         boolean actual2 = newAccount.equals(newAccount3);
@@ -64,15 +63,17 @@ public class AccountTest {
     @Test
     public void canWithdraw() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", bank);
         float withdrawAmount = 1100;
 
         //when
         boolean basicActual = newAccount.canWithdraw(withdrawAmount);
         boolean premiumActual = newAccount2.canWithdraw(withdrawAmount);
 
-        //then  basic can not withdraw(account is overdrawn) but premium can
+        //then
+        // basic can not withdraw(account is overdrawn) but premium can
         assertFalse(basicActual);
         assertTrue(premiumActual);
     }
@@ -80,8 +81,9 @@ public class AccountTest {
     @Test
     public void getBalance() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", bank);
         float basicBalance = 1000;
         float premiumBalance = 2000;
 
@@ -98,8 +100,9 @@ public class AccountTest {
     @Test
     public void getName() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", bank);
 
         //when
         String basicName = "Khalil";
@@ -114,8 +117,9 @@ public class AccountTest {
     @Test
     public void getEmail() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", bank);
         String expectedEmail = "khalilcrumpler@gmail.com";
         String expectedEmail2 = "khalilcrumpler@hotmail.com";
 
@@ -128,32 +132,14 @@ public class AccountTest {
         Assert.assertEquals(expectedEmail2, actualEmail2);
     }
 
-
-
-    @Test
-    public void getPassword() {
-        //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123");
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123");
-        String expectedPassword = "abc123";
-        //when
-        String actualPassword = newAccount.getPassword();
-        String actualPassword2 = newAccount2.getPassword();
-        //then
-        Assert.assertEquals(expectedPassword, actualPassword);
-        Assert.assertEquals(expectedPassword, actualPassword2);
-
-    }
-
     @Test
     public void isAdmin() {
         //given
-        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", true);
-        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", false);
+        Bank bank = new Bank();
+        BasicAccount newAccount = new BasicAccount("Khalil", "khalilcrumpler@gmail.com", 1000, "abc123", true, bank);
+        PremiumAccount newAccount2 = new PremiumAccount("John", "khalilcrumpler@hotmail.com", 2000, "abc123", false, bank);
 
         //when
-        boolean expectedBasic = true;
-        boolean expectedPremium = false;
         boolean actualBasic = newAccount.isAdmin();
         boolean actualPremium = newAccount2.isAdmin();
 
