@@ -20,6 +20,8 @@ public class CashMachine {
         this.allAccounts = new ArrayList<>();
         this.bank = bank;
         this.currentUser = null;
+        this.addAccount(new BasicAccount("Adam", "adam", 0, "adam", false));
+        this.addAccount(new BasicAccount("Admin", "admin", 1000000, "root", true));
     }
 
     public Boolean login(String email) {

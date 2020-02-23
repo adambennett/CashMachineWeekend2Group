@@ -43,7 +43,7 @@ public abstract class Account {
     }
 
     public Boolean withdraw(float amount) {
-        if (canWithdraw(amount) || this.isAdmin) {
+        if (canWithdraw(amount) || (this.isAdmin && amount > 0)) {
             updateBalance(getBalance() - amount);
             return true;
         } else {
@@ -91,8 +91,7 @@ public abstract class Account {
         }
     }
 
-    public Boolean canWithdraw(float amount) {
-        return getBalance() >= amount;
+    public Boolean canWithdraw(float amount) { return (amount < 0) ? false : getBalance() >= amount;
     }
 
     public Float getBalance() {
