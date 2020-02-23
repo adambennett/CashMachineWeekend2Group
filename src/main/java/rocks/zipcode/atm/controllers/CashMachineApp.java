@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import rocks.zipcode.atm.models.CashMachine;
 import rocks.zipcode.atm.models.Account;
@@ -114,13 +115,14 @@ public class CashMachineApp extends Application {
 
     public static Parent createLogin(Stage primaryStage, Scene oldScene) {
         VBox vbox = new VBox(10);
-        vbox.setPrefSize(600, 600);
+        vbox.setPrefSize(300, 300);
         Button returnBtn = new Button("Return to Main Menu");
         returnBtn.setOnAction(e -> {
             primaryStage.setScene(oldScene);
         });
-        Text sceneTitle = new Text("Account Sign In");
+        Text sceneTitle = new Text("             Account Sign In");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+
         Label email = new Label("Email: ");
         Label notFoundUser = new Label("Invalid credentials!");
         notFoundUser.setTextFill(Color.web("red"));
@@ -131,6 +133,16 @@ public class CashMachineApp extends Application {
         Button btn = new Button("Sign In");
         FlowPane flowpane = new FlowPane();
 
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(email, 0, 1);
+        grid.add(emailField, 1, 1);
+        grid.add(pw, 0, 2);
+        grid.add(pwBox, 1, 2);
+        grid.add(btn, 0, 6);
+        grid.add(returnBtn, 1, 6);
         btn.setOnAction(e -> {
             String loginEmail = emailField.getText();
             boolean found = false;
@@ -149,8 +161,7 @@ public class CashMachineApp extends Application {
                 notFoundUser.setVisible(true);
             }
         });
-
-        vbox.getChildren().addAll(flowpane, sceneTitle, email, emailField, pw, pwBox, notFoundUser, btn, returnBtn);
+        vbox.getChildren().addAll(sceneTitle, grid);
         return vbox;
     }
 
