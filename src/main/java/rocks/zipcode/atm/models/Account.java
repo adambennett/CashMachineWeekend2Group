@@ -1,5 +1,9 @@
 package rocks.zipcode.atm.models;
 
+import java.text.DecimalFormat;
+
+import static jdk.nashorn.internal.objects.NativeMath.round;
+
 /**
  * @author ZipCodeWilmington
  */
@@ -47,16 +51,30 @@ public abstract class Account {
         }
     }
 
+    private static DecimalFormat df = new DecimalFormat("0.00");
+
     @Override
     public String toString() {
         if (this.balance < 0) {
+
+//            return "Name: " + name + '\n' +
+//                    "Email: " + email + '\n' +
+//                    "Balance: -$" + -balance;
+                Float value = Float.valueOf(df.format(balance));
             return "Name: " + name + '\n' +
                     "Email: " + email + '\n' +
-                    "Balance: -$" + -balance;
+                    "Balance: -$" + -value;
+
+
         } else {
+//            return "Name: " + name + '\n' +
+//                    "Email: " + email + '\n' +
+//                    "Balance: $" + balance;
+            Float value = Float.valueOf(df.format(balance));
             return "Name: " + name + '\n' +
                     "Email: " + email + '\n' +
-                    "Balance: $" + balance;
+                    "Balance: $" + value;
+
         }
     }
 
