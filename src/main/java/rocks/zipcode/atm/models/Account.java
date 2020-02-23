@@ -1,5 +1,6 @@
 package rocks.zipcode.atm.models;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import static jdk.nashorn.internal.objects.NativeMath.round;
@@ -51,28 +52,32 @@ public abstract class Account {
         }
     }
 
-    private static DecimalFormat df = new DecimalFormat("0.00");
+    private static DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
 
     @Override
     public String toString() {
-        if (this.balance < 0) {
-
-//            return "Name: " + name + '\n' +
-//                    "Email: " + email + '\n' +
-//                    "Balance: -$" + -balance;
-                Float value = Float.valueOf(df.format(balance));
-            return "Name: " + name + '\n' +
-                    "Email: " + email + '\n' +
-                    "Balance: -$" + -value;
+        df.setDecimalSeparatorAlwaysShown(true);
+        df.setMinimumFractionDigits(2);
+        BigDecimal bal = new BigDecimal(balance);
+        if (balance == 0) {
+            String value = df.format(0.0);
+            return "Name: " + name + "\n"  +
+                    "Email: " + email + "\n"  +
+                    "Balance: $" + value;
+        }
+        else if (balance < 0) {
+            //double rawPercent = ( (double)(balance) / (double)(balance) ) * 100.00;
+            String value = df.format(bal.multiply(BigDecimal.valueOf(-1.0)));
+            return "Name: " + name + "\n" +
+                    "Email: " + email + "\n"  +
+                    "Balance: -$" + value;
 
 
         } else {
-//            return "Name: " + name + '\n' +
-//                    "Email: " + email + '\n' +
-//                    "Balance: $" + balance;
-            Float value = Float.valueOf(df.format(balance));
-            return "Name: " + name + '\n' +
-                    "Email: " + email + '\n' +
+            //double rawPercent = ( (double)(balance) / (double)(balance) ) * 100.00;
+            String value = df.format(bal);
+            return "Name: " + name + "\n"  +
+                    "Email: " + email + "\n"  +
                     "Balance: $" + value;
 
         }

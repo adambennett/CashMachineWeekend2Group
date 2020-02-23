@@ -26,6 +26,8 @@ import rocks.zipcode.atm.models.BasicAccount;
 import rocks.zipcode.atm.models.PremiumAccount;
 import rocks.zipcode.atm.services.MenuServices;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -220,10 +222,16 @@ public class CashMachineApp extends Application {
     }
 
     private static String getBadWithdrawText(Float amt) {
+        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
+        df.setDecimalSeparatorAlwaysShown(true);
+        df.setMinimumFractionDigits(2);
+        BigDecimal bal = new BigDecimal(cashMachine.getBalance());
         if (cashMachine.getBalance() < 0) {
-            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has -$" + -cashMachine.getBalance();
+            String value = df.format(bal.multiply(BigDecimal.valueOf(-1.0)));
+            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has -$" + value;
         } else {
-            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has $" + cashMachine.getBalance();
+            String value = df.format(bal);
+            return "Withdraw failed!\nCannot withdraw $" + amt + ".\n" + cashMachine.getCurrentUser().getName() + " only has $" + value;
         }
 
     }
