@@ -5,7 +5,11 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import rocks.zipcode.atm.controllers.CashMachineApp;
 
+import java.util.ArrayList;
+
 public class MenuServices {
+
+    private static ArrayList<Character> specialChars;
 
     public static void handleMenuListeners(Stage stage, Scene mainScene) {
         MenuItem login = CashMachineApp.getMenus().get(CashMachineApp.MenuType.LOGIN);
@@ -49,6 +53,72 @@ public class MenuServices {
             Scene scene = new Scene(CashMachineApp.createInstruction(stage, mainScene));
             stage.setScene(scene);
         });
+    }
+
+
+    public static Boolean canRegister(String name, String email, String pass) {
+        if (name.equals("")) {
+            return false;
+        } else if (email.equals("")) {
+            return false;
+        } else if (pass.equals("")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static Boolean passwordLogicCheck(String pass) {
+        boolean foundSpecial = false;
+        boolean foundUppercase = false;
+        boolean foundLowercase = false;
+        ArrayList<Character> chars = new ArrayList<>();
+        for (char c : pass.toCharArray()) {
+            chars.add(c);
+            if (specialChars.contains(c)) {
+                foundSpecial = true;
+            }
+            if (Character.isUpperCase(c)) {
+                foundUppercase = true;
+            } else {
+                foundLowercase = true;
+            }
+        }
+        return (!foundUppercase || !foundSpecial || pass.length() < 8 || !foundLowercase) ? false : true;
+    }
+
+    static {
+        specialChars = new ArrayList<>();
+        specialChars.add('!');
+        specialChars.add('#');
+        specialChars.add('$');
+        specialChars.add('%');
+        specialChars.add('&');
+        specialChars.add(' ');
+        specialChars.add('(');
+        specialChars.add(')');
+        specialChars.add('*');
+        specialChars.add('+');
+        specialChars.add(',');
+        specialChars.add('-');
+        specialChars.add('.');
+        specialChars.add('/');
+        specialChars.add(':');
+        specialChars.add(';');
+        specialChars.add('<');
+        specialChars.add('=');
+        specialChars.add('>');
+        specialChars.add('?');
+        specialChars.add('@');
+        specialChars.add('[');
+        specialChars.add(']');
+        specialChars.add('^');
+        specialChars.add('_');
+        specialChars.add('`');
+        specialChars.add('{');
+        specialChars.add('|');
+        specialChars.add('}');
+        specialChars.add('~');
     }
 
 }

@@ -265,11 +265,14 @@ public class CashMachineApp extends Application {
 
     public static Parent createRegister(Stage primaryStage, Scene oldScene) {
         VBox vbox = new VBox(10);
-        vbox.setPrefSize(400, 400);
+        //vbox.setPrefSize(450, 400);
+        vbox.setPrefSize(700, 400);
         Button returnBtn = new Button("Return to Main Menu");
         Button register = new Button("Register");
 
-        Text sceneTitle = new Text("New Account Registration");
+        returnBtn.setWrapText(true);
+
+        Text sceneTitle = new Text("                New Account Registration");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 
         PasswordField pwBox = new PasswordField();
@@ -291,12 +294,30 @@ public class CashMachineApp extends Application {
         Label accountType = new Label("Account Type");
         Label balance = new Label("Balance");
         Label userName = new Label("Name");
+        Label userExists = new Label("User already exists!");
+        userExists.setTextFill(Color.web("red"));
+        userExists.setVisible(false);
+
+        Label notEnoughInfo = new Label("Please fill out the registration form.");
+        notEnoughInfo.setTextFill(Color.web("blue"));
+        notEnoughInfo.setVisible(false);
+        notEnoughInfo.setWrapText(true);
+
+        Label badPass = new Label("Password is not secure!");
+        badPass.setTextFill(Color.web("red"));
+        badPass.setVisible(false);
+        badPass.setWrapText(true);
+
+        Tooltip tooltip = new Tooltip("Passwords must be at least 8 characters\nPasswords must contain uppercase and lowercase letters\nPasswords must contain at least one special character.");
+        pwBox.setTooltip(tooltip);
+        tooltip.setWrapText(true);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
+        grid.setHgap(5);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.add(sceneTitle, 0, 0);
         grid.add(userName, 0, 1);
         grid.add(userTextField, 1, 1);
         grid.add(pw, 0, 2);
@@ -308,6 +329,9 @@ public class CashMachineApp extends Application {
         grid.add(admin, 1, 5);
         grid.add(balance, 0, 6);
         grid.add(balanceField, 1, 6);
+        grid.add(badPass, 0, 7);
+        grid.add(notEnoughInfo, 0, 8);
+        grid.add(userExists, 0, 9);
         grid.add(register, 0, 10);
         grid.add(returnBtn, 1, 10);
 
@@ -316,31 +340,74 @@ public class CashMachineApp extends Application {
         });
 
         register.setOnAction(e -> {
-            String newName = userTextField.getText();
             String newEmail = emailField.getText();
-            String newAccount = accountBox.getValue().toString();
-            String startBal = balanceField.getText();
-            String pass = pwBox.getText();
-            Boolean adminBox = admin.isSelected();
-            Float newBal = 0.0f;
-            try {
-                newBal = Float.parseFloat(startBal);
-            } catch (NumberFormatException ex) { }
-            Account.AccountType newType = Account.AccountType.BASIC;
-            if (newAccount.equals("Premium Account")) {
-                newType = Account.AccountType.PREMIUM;
-            }
-            if (adminBox) {
-                HandleNewUser(newName, newEmail, pass, newBal, newType, true);
-            } else {
-                HandleNewUser(newName, newEmail, pass, newBal, newType, false);
+
+            boolean found = false;
+            for (Account acc : cashMachine.getAllAccounts()) {
+                if (acc.getEmail().equals(newEmail)) {
+                    found = true;
+                    break;
+                }
             }
 
-            primaryStage.setScene(oldScene);
+
+            try {
+                if (!found) {
+                    userExists.setVisible(false);
+                    notEnoughInfo.setVisible(false);
+                    badPass.setVisible(false);
+                    String newName = userTextField.getText();
+                    String newAccount = accountBox.getValue().toString();
+                    String startBal = balanceField.getText();
+                    String pass = pwBox.getText();
+                    Boolean adminBox = admin.isSelected();
+                    Float newBal = 0.0f;
+                    try {
+                        newBal = Float.parseFloat(startBal);
+                    } catch (NumberFormatException ex) {}
+
+                    Boolean canRegister = MenuServices.canRegister(newName, newEmail, pass);
+                    Boolean passPasses = MenuServices.passwordLogicCheck(pass);
+                    if (canRegister) {
+                        if (passPasses) {
+                            Account.AccountType newType = Account.AccountType.BASIC;
+                            if (newAccount.equals("Premium Account")) {
+                                newType = Account.AccountType.PREMIUM;
+                            }
+                            if (adminBox) {
+                                HandleNewUser(newName, newEmail, pass, newBal, newType, true);
+                            } else {
+                                HandleNewUser(newName, newEmail, pass, newBal, newType, false);
+                            }
+                            primaryStage.setScene(oldScene);
+                            Logger.getGlobal().info("\n\nRegistration successful. Registered: " + newEmail);
+                        } else {
+                            badPass.setVisible(true);
+                            Logger.getGlobal().info("\n\nRegistration failed. Bad password.");
+                            userExists.setVisible(false);
+                            notEnoughInfo.setVisible(false);
+                        }
+                    } else {
+                        notEnoughInfo.setVisible(true);
+                        Logger.getGlobal().info("\n\nRegistration failed. Not enough infomation filled out.");
+                        userExists.setVisible(false);
+                        badPass.setVisible(false);
+                    }
+                } else {
+                    userExists.setVisible(true);
+                    Logger.getGlobal().info("\n\nRegistration failed. User already exists.");
+                    notEnoughInfo.setVisible(false);
+                    badPass.setVisible(false);
+                }
+            } catch (NullPointerException ex) {
+                notEnoughInfo.setVisible(true);
+                Logger.getGlobal().info("\n\nRegistration failed. Found null pointer somewhere..");
+                userExists.setVisible(false);
+                badPass.setVisible(false);
+            }
         });
 
-       // vbox.getChildren().addAll(sceneTitle, userName, userTextField, pw, pwBox, email, emailField, accountType, accountBox, balance, balanceField,register, returnBtn);
-        vbox.getChildren().addAll(sceneTitle, grid);
+        vbox.getChildren().addAll(grid);
         return vbox;
     }
 
